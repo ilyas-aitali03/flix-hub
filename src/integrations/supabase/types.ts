@@ -9,7 +9,51 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      content: {
+        Row: {
+          backdrop_url: string
+          content_type: Database["public"]["Enums"]["content_type"]
+          created_at: string
+          description: string
+          genre: string[]
+          id: string
+          poster_url: string
+          rating: number | null
+          release_year: number
+          title: string
+          trailer_url: string
+          updated_at: string
+        }
+        Insert: {
+          backdrop_url: string
+          content_type: Database["public"]["Enums"]["content_type"]
+          created_at?: string
+          description: string
+          genre: string[]
+          id?: string
+          poster_url: string
+          rating?: number | null
+          release_year: number
+          title: string
+          trailer_url: string
+          updated_at?: string
+        }
+        Update: {
+          backdrop_url?: string
+          content_type?: Database["public"]["Enums"]["content_type"]
+          created_at?: string
+          description?: string
+          genre?: string[]
+          id?: string
+          poster_url?: string
+          rating?: number | null
+          release_year?: number
+          title?: string
+          trailer_url?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -18,7 +62,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      content_type: "movie" | "series"
     }
     CompositeTypes: {
       [_ in never]: never

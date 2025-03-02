@@ -6,6 +6,10 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Layout from "./components/Layout";
 import Index from "./pages/Index";
+import Movies from "./pages/Movies";
+import Series from "./pages/Series";
+import Trending from "./pages/Trending";
+import Watchlist from "./pages/Watchlist";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -19,10 +23,10 @@ const App = () => (
         <Layout>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/movies" element={<NotFound />} />
-            <Route path="/series" element={<NotFound />} />
-            <Route path="/trending" element={<NotFound />} />
-            <Route path="/watchlist" element={<NotFound />} />
+            <Route path="/movies" element={<Movies />} />
+            <Route path="/series" element={<Series />} />
+            <Route path="/trending" element={<Trending />} />
+            <Route path="/watchlist" element={<Watchlist />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>

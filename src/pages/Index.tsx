@@ -1,10 +1,11 @@
 
 import { useQuery } from '@tanstack/react-query';
-import { Play } from 'lucide-react';
+import { Play, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import VideoPlayer from '@/components/VideoPlayer';
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useNavigate } from 'react-router-dom';
 
 interface Content {
   id: string;
@@ -21,6 +22,7 @@ interface Content {
 
 const Index = () => {
   const [selectedTrailer, setSelectedTrailer] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const { data: featuredContent } = useQuery({
     queryKey: ['featured'],
@@ -48,6 +50,11 @@ const Index = () => {
     }
   });
 
+  const handleMoreInfo = (content: Content) => {
+    // Navigate to the content details page based on type
+    navigate(`/${content.content_type}s/${content.id}`);
+  };
+
   return (
     <div className="space-y-16">
       {/* Hero Section */}
@@ -70,7 +77,12 @@ const Index = () => {
               >
                 <Play className="mr-2 h-4 w-4" /> Watch Trailer
               </Button>
-              <Button variant="outline">More Info</Button>
+              <Button 
+                variant="outline"
+                onClick={() => featuredContent && handleMoreInfo(featuredContent)}
+              >
+                <Info className="mr-2 h-4 w-4" /> More Info
+              </Button>
             </div>
           </div>
         </div>

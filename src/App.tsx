@@ -10,6 +10,7 @@ import Movies from "./pages/Movies";
 import Series from "./pages/Series";
 import Trending from "./pages/Trending";
 import Watchlist from "./pages/Watchlist";
+import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App = () => (
             <Route path="/series" element={<Series />} />
             <Route path="/trending" element={<Trending />} />
             <Route path="/watchlist" element={<Watchlist />} />
+            <Route path="/auth" element={<Auth />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>

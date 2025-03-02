@@ -1,13 +1,48 @@
-
-import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, Search, X } from 'lucide-react';
 import { Button } from './ui/button';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/integrations/supabase/client';
+import { User } from '@supabase/supabase-js';
+import { useToast } from '@/components/ui/use-toast';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleSignOut = async () => {
+    try {
+      await supabase.auth.signOut();
+      navigate('/');
+      toast({
+        title: "Signed out successfully",
+      });
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error signing out",
+        description: error.message,
+      });
+    }
+  };
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -23,7 +58,6 @@ const Navigation = () => {
             </span>
           </Link>
 
-          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             <Link 
               to="/" 
@@ -76,12 +110,23 @@ const Navigation = () => {
             <Button variant="ghost" size="icon">
               <Search className="h-5 w-5" />
             </Button>
-            <Button className="bg-theme-crimson hover:bg-theme-crimson/90">
-              Sign In
-            </Button>
+            {user ? (
+              <Button 
+                onClick={handleSignOut}
+                className="bg-theme-crimson hover:bg-theme-crimson/90"
+              >
+                Sign Out
+              </Button>
+            ) : (
+              <Button 
+                onClick={() => navigate('/auth')}
+                className="bg-theme-crimson hover:bg-theme-crimson/90"
+              >
+                Sign In
+              </Button>
+            )}
           </div>
 
-          {/* Mobile menu button */}
           <div className="md:hidden">
             <Button variant="ghost" size="icon" onClick={toggleMenu}>
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -89,7 +134,6 @@ const Navigation = () => {
           </div>
         </div>
 
-        {/* Mobile Navigation */}
         {isOpen && (
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 bg-theme-black/95 backdrop-blur-sm rounded-lg animate-fadeIn">
@@ -149,9 +193,21 @@ const Navigation = () => {
                 Watchlist
               </Link>
               <div className="px-3 py-2">
-                <Button className="w-full bg-theme-crimson hover:bg-theme-crimson/90">
-                  Sign In
-                </Button>
+                {user ? (
+                  <Button 
+                    onClick={handleSignOut}
+                    className="w-full bg-theme-crimson hover:bg-theme-crimson/90"
+                  >
+                    Sign Out
+                  </Button>
+                ) : (
+                  <Button 
+                    onClick={() => navigate('/auth')}
+                    className="w-full bg-theme-crimson hover:bg-theme-crimson/90"
+                  >
+                    Sign In
+                  </Button>
+                )}
               </div>
             </div>
           </div>
